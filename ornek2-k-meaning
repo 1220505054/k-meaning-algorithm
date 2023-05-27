@@ -1,0 +1,28 @@
+#Bu kod, k-means kümeleme algoritmasını kullanarak verileri iki farklı kümeye böler ve sonuçları grafiğe çizer
+import numpy as np
+import cv2
+from matplotlib import pyplot as plt
+#İki ayrı veri kümesi `M` ve `N` oluşturulur.
+
+M = np.random.randint(10,45,(25,2))
+N = np.random.randint(55,70,(25,2))
+K = np.vstack((M,N))
+  
+# Veri kümesi `K` np.float32 türüne dönüştürülür.
+K = np.float32(K)
+  
+# Kriterleri tanımlayın ve kmeans() uygulayın
+criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
+ret,label,center = cv2.kmeans(K,2,None,criteria,10,cv2.KMEANS_RANDOM_CENTERS)
+  
+# veriler ayrılır
+A = K[label.ravel()==0]
+B = K[label.ravel()==1]
+  
+# Eksen etiketleri "Test Data" ve "K samples" olarak belirtilir
+# Elde edilen verileri çizin
+plt.scatter(A[:,0],A[:,1])
+plt.scatter(B[:,0],B[:,1],c = 'r')
+plt.scatter(center[:,0],center[:,1],s = 80,c = 'y', marker = 's')
+plt.xlabel('Test Data'),plt.ylabel('K samples')
+plt.show()
