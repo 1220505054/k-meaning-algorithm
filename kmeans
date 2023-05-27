@@ -1,0 +1,37 @@
+#Bu kodda, iki farklı boyutta rastgele veri noktaları oluşturulur ve ardından bu veriler cv2.kmeans() fonksiyonuna gönderilir
+ve üç gruba sınıflandırılır.
+Son olarak oluşan gruplar matplotlib kütüphanesi kullanılarak çizilir.
+
+
+import numpy as np
+import cv2
+from matplotlib import pyplot as plt
+
+# Rastgele veri noktaları oluşturulur
+X = np.random.randint(10, 50, (30, 2))
+Y = np.random.randint(60, 80, (30, 2))
+Z = np.vstack((X, Y))
+
+
+Z = np.float32(Z)
+
+# Kriterleri tanımlama ve k-means kümelemesini uygulayabilme
+criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
+k = 3  # Number of clusters
+ret, label, center = cv2.kmeans(Z, k, None, criteria, 10, cv2.KMEANS_RANDOM_CENTERS)
+
+# Veri noktalarını küme etiketlerine göre ayırın
+clusters = []
+for i in range(k):
+    cluster = Z[label.ravel() == i]
+    clusters.append(cluster)
+# Kümeleri çizme
+colors = ['b', 'g', 'r']  # Color for each cluster
+for i, cluster in enumerate(clusters):
+    plt.scatter(cluster[:, 0], cluster[:, 1], c=colors[i])
+
+plt.scatter(center[:, 0], center[:, 1], s=80, c='y', marker='s')
+plt.xlabel('X')
+plt.ylabel('Y')
+plt.title('K-means Clustering')
+plt.show()
